@@ -1,0 +1,39 @@
+services:
+  rockyContainer1:
+    container_name: myRockyContainer1
+    image: rockylinux:8.8.20230518
+    networks:
+      - rockyNetwork1
+    volumes:
+      - rockyVolume1:/var/test
+    ports:
+      - 8080:80
+    restart: always
+    environment:
+      MY_ENV_CODE: 1
+      MY_TEST_CD: 'TST'
+  rockyContainer2:
+    container_name: myRockyContainer2
+    image: rockylinux:8.8.20230518
+    networks:
+      - rockyNetwork1
+    volumes:
+      - type: bind
+        source: C:/Users\clgns\Desktop\workspace\dockerEx\rockyBindVolume2 # 호스트 경로
+        target: /test2 # 컨테이너 내부 경로
+      - rockyVolume2:/var/test2 # Docker Volume 사용 시 source 필요 없음
+    ports:
+      - 8085:85
+    restart: always
+    environment:
+      - MY_ENV_CODE=${MY_ENV_CODE}
+      - MY_ENV_EXTERNAL_CODE=${MY_ENV_EXTERNAL_CODE}
+      - MY_ENV_CODE_FILE=${MY_ENV_CODE_FILE}
+      - MY_TEST_CD=TST2
+    depends_on: [rockyContainer1]
+    command: tail -f /dev/null  # 컨테이너가 종료되지 않도록 실행 유지
+networks:
+  rockyNetwork1:
+volumes:
+  rockyVolume1:
+  rockyVolume2:
